@@ -1,27 +1,77 @@
-import random
-import string
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code Cracker Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      padding: 50px;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
 
-def generate_code(length=10):
-    characters = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(random.choices(characters, k=length))
+  <h1>🔐 Code Cracker Game</h1>
+  <p>Guess the 10-character secret code (includes letters, numbers, and symbols)</p>
 
-def play_game():
-    print("Welcome to the Code Cracker Game!")
-    secret_code = generate_code()
-    attempts = 3
+  <input type="text" id="userGuess" maxlength="10" placeholder="Enter your guess">
+  <br>
+  <button onclick="checkGuess()">Submit Guess</button>
+  <div class="message" id="message"></div>
 
-    while attempts > 0:
-        guess = input("Guess the 10-character secret code: ")
+  <script>
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    let secretCode = '';
+    let attemptsLeft = 3;
 
-        if guess == secret_code:
-            print("🎉 Congratulations! You guessed it right.")
-            return
-        else:
-            print("❌ Incorrect. Try again.")
-            attempts -= 1
-            print(f"Attempts left: {attempts}")
+    function generateCode(length = 10) {
+      let code = '';
+      for (let i = 0; i < length; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return code;
+    }
 
-    print(f"Game Over! The correct code was: {secret_code}")
+    function checkGuess() {
+      const guess = document.getElementById("userGuess").value;
+      const message = document.getElementById("message");
 
-if __name__ == "__main__":
-    play_game()
+      if (guess === secretCode) {
+        message.style.color = "green";
+        message.textContent = "🎉 Congratulations! You cracked the code!";
+      } else {
+        attemptsLeft--;
+        if (attemptsLeft > 0) {
+          message.style.color = "red";
+          message.textContent = `❌ Incorrect. ${attemptsLeft} attempt(s) left.`;
+        } else {
+          message.style.color = "red";
+          message.textContent = `💀 Game Over! The correct code was: ${secretCode}`;
+        }
+      }
+    }
+
+    // Initialize game
+    secretCode = generateCode();
+    console.log("Secret code (for testing):", secretCode); // You can remove this line in production
+  </script>
+
+</body>
+</html>
