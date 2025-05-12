@@ -1,0 +1,27 @@
+import random
+import string
+
+def generate_code(length=10):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choices(characters, k=length))
+
+def play_game():
+    print("Welcome to the Code Cracker Game!")
+    secret_code = generate_code()
+    attempts = 3
+
+    while attempts > 0:
+        guess = input("Guess the 10-character secret code: ")
+
+        if guess == secret_code:
+            print("🎉 Congratulations! You guessed it right.")
+            return
+        else:
+            print("❌ Incorrect. Try again.")
+            attempts -= 1
+            print(f"Attempts left: {attempts}")
+
+    print(f"Game Over! The correct code was: {secret_code}")
+
+if __name__ == "__main__":
+    play_game()
