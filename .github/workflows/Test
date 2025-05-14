@@ -1,1 +1,78 @@
+import math
 
+# Function to create a simple 3D room in ASCII art
+def draw_3d_room():
+    # Cube corners in 3D space
+    # These are the coordinates of a cube in 3D space (not perspective yet)
+    cube_vertices = [
+        (-1, 1, -1),  # Front top left
+        (1, 1, -1),   # Front top right
+        (1, -1, -1),  # Front bottom right
+        (-1, -1, -1), # Front bottom left
+        (-1, 1, 1),   # Back top left
+        (1, 1, 1),    # Back top right
+        (1, -1, 1),   # Back bottom right
+        (-1, -1, 1),  # Back bottom left
+    ]
+    
+    # Perspective parameters (simple projection)
+    focal_length = 4
+    projection_scale = 20
+
+    # Function to project 3D points into 2D space (perspective projection)
+    def project(x, y, z):
+        # Basic perspective projection: simple division by Z to simulate depth
+        factor = focal_length / (focal_length + z)
+        x_2d = x * factor * projection_scale
+        y_2d = y * factor * projection_scale
+        return (x_2d, y_2d)
+    
+    # Project all cube vertices into 2D space
+    projected_vertices = [project(x, y, z) for (x, y, z) in cube_vertices]
+
+    # Set up the connections between vertices to form the cube's edges
+    edges = [
+        (0, 1), (1, 2), (2, 3), (3, 0),   # Front square
+        (4, 5), (5, 6), (6, 7), (7, 4),   # Back square
+        (0, 4), (1, 5), (2, 6), (3, 7),   # Connecting front and back
+    ]
+
+    # Create an empty canvas for the ASCII representation
+    canvas_width = 40
+    canvas_height = 20
+    canvas = [[' ' for _ in range(canvas_width)] for _ in range(canvas_height)]
+
+    # Function to draw a line between two 2D points on the canvas
+    def draw_line(x1, y1, x2, y2):
+        # Simple line-drawing algorithm (Bresenham's line algorithm)
+        dx = abs(x2 - x1)
+        dy = abs(y2 - y1)
+        sx = 1 if x1 < x2 else -1
+        sy = 1 if y1 < y2 else -1
+        err = dx - dy
+
+        while True:
+            if 0 <= x1 < canvas_width and 0 <= y1 < canvas_height:
+                canvas[int(y1)][int(x1)] = '*'
+            if x1 == x2 and y1 == y2:
+                break
+            e2 = err * 2
+            if e2 > -dy:
+                err -= dy
+                x1 += sx
+            if e2 < dx:
+                err += dx
+                y1 += sy
+
+    # Draw all edges of the cube on the canvas
+    for (start, end) in edges:
+        (x1, y1) = projected_vertices[start]
+        (x2, y2) = projected_vertices[end]
+        draw_line(x1 + canvas_width // 2, y1 + canvas_height // 2, x2 + canvas_width // 2, y2 + canvas_height // 2)
+
+    # Print the canvas
+    for row in canvas:
+        print(''.join(row))
+
+# Call the function to draw the 3D room
+draw_3d_room()
